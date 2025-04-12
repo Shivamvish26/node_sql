@@ -36,7 +36,7 @@ app.post("/users_contact", (req, resp) => {
       service: "gmail",
       auth: {
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
+        pass: process.env.EMAIL_PASS,
       },
     });
 
@@ -64,14 +64,26 @@ app.post("/users_contact", (req, resp) => {
   });
 });
 
-
 // PUT API CODE
 app.put("/update_user/:id", (req, resp) => {
-  const data = [req.body.name, req.body.email, req.params.id]
-  con.query("UPDATE Users SET name = ?, email = ? where id = ?", data, (err, result) => {
+  const data = [req.body.name, req.body.email, req.params.id];
+  con.query(
+    "UPDATE Users SET name = ?, email = ? where id = ?",
+    data,
+    (err, result) => {
+      if (err) throw err;
+      resp.send(result);
+    }
+  );
+});
+
+// DELETE API
+app.delete("/delete_user/:id", (req, resp) => {
+  const id = req.params.id;
+  con.query("DELETE FROM Users WHERE id = ?", id, (err, result) => {
     if (err) throw err;
-    resp.send(result)
-  })
+    resp.send(result);
+  });
 });
 
 app.listen(5000, () => {
